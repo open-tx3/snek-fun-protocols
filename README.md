@@ -1,4 +1,4 @@
-# snek-protocols
+# snek-fun-protocols
 
 Tx3 models of Snek (snek.fun) protocols.
 
