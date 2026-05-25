@@ -1,0 +1,11 @@
+[protocol]
+name = "snek-fun"
+scope = "snekdotfun"
+version = "0.1.0"
+description = "Cardano token launchpad — user-facing order flow (place/cancel buy+sell orders)"
+main = "main.tx3"
+readme = "README.md"
+
+
+[ledger]
+family = "cardano"

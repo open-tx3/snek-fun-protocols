@@ -1,0 +1,8 @@
+{
+  "user": "addr1q9cehmjzf2tmtzeae2y0uhdxl6kxf992wgn0ja0n2pk9kftcgmmtkpl4k2p93p0y2qn8ne5eknnq5rzxpxjxhs652nxsqwq3mt",
+  "orderscript": "addr1z8v3gwkxx3emz73pt5dhfpxlk6kxkjsqqkltpcn2djsze9ncgmmtkpl4k2p93p0y2qn8ne5eknnq5rzxpxjxhs652nxsqyujmw",
+  "bondingcurvescript": "addr1xxg94wrfjcdsjncmsxtj0r87zk69e0jfl28n934sznu95tdj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrs2993lw",
+  "metadatascript": "addr1q8lsjfvtpnu9kv5zhwgsdcw03tlkuwcvjqmzm35arx9xl6k6s0uhca7762y56q2j9en5ttn69p7a048cw3mz62fuj3mqauv0x3",
+  "feeaddress": "addr1qy32agk6zhjffcqhvu296j9a594k6smlr3zfsgaqgsvnmtefn2pw7433r2ss4hcycqrj6jrsaw056hlnz5fjgdyyrd6qsw8ngt",
+  "order_utxo": "c665188f6c6f358ddabcbf49e02aa78c2c762c1517a29d024ffead51715c87c0#0"
+}

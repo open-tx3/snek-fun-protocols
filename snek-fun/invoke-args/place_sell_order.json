@@ -1,0 +1,14 @@
+{
+  "user": "addr1q84uy5f05m54tn0s923ndp40vh9u5zkadhnmy399d48f0ujqudqhf2539lqg4j0hhnqy2z0la0m07pep9035y986645sdh9jdg",
+  "orderscript": "addr1z8v3gwkxx3emz73pt5dhfpxlk6kxkjsqqkltpcn2djsze9jqudqhf2539lqg4j0hhnqy2z0la0m07pep9035y986645sshceem",
+  "bondingcurvescript": "addr1xxg94wrfjcdsjncmsxtj0r87zk69e0jfl28n934sznu95tdj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrs2993lw",
+  "metadatascript": "addr1q8lsjfvtpnu9kv5zhwgsdcw03tlkuwcvjqmzm35arx9xl6k6s0uhca7762y56q2j9en5ttn69p7a048cw3mz62fuj3mqauv0x3",
+  "feeaddress": "addr1qy32agk6zhjffcqhvu296j9a594k6smlr3zfsgaqgsvnmtefn2pw7433r2ss4hcycqrj6jrsaw056hlnz5fjgdyyrd6qsw8ngt",
+  "user_pkh": "ebc2512fa6e955cdf02aa33686af65cbca0add6de7b244a56d4e97f2",
+  "user_stake_key": "40e34174aa912fc08ac9f7bcc04509ffebf6ff07212be34214fad569",
+  "token_policy": "c4dd822c92c486a06933042c49e0f4e0a0440907420d9743321f4105",
+  "token_name": "5468652052616e6368204d6173636f74",
+  "empty_bytes": "",
+  "token_amount": 6581482,
+  "deadline_ms": 1779696000000
+}

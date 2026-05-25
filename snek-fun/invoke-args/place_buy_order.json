@@ -1,0 +1,15 @@
+{
+  "user": "addr1q89hkn3ppyjp904dqdn8g26q9zsnclzlu8dquk67c6zv4das2hu5cuh44qsavga9u387q27r8u02z2zgffus2ggmtv0shjncd5",
+  "orderscript": "addr1z8v3gwkxx3emz73pt5dhfpxlk6kxkjsqqkltpcn2djsze94s2hu5cuh44qsavga9u387q27r8u02z2zgffus2ggmtv0ssz3k73",
+  "bondingcurvescript": "addr1xxg94wrfjcdsjncmsxtj0r87zk69e0jfl28n934sznu95tdj764lvrxdayh2ux30fl0ktuh27csgmpevdu89jlxppvrs2993lw",
+  "metadatascript": "addr1q8lsjfvtpnu9kv5zhwgsdcw03tlkuwcvjqmzm35arx9xl6k6s0uhca7762y56q2j9en5ttn69p7a048cw3mz62fuj3mqauv0x3",
+  "feeaddress": "addr1qy32agk6zhjffcqhvu296j9a594k6smlr3zfsgaqgsvnmtefn2pw7433r2ss4hcycqrj6jrsaw056hlnz5fjgdyyrd6qsw8ngt",
+  "user_pkh": "cb7b4e21092412bead0366742b4028a13c7c5fe1da0e5b5ec684cab7",
+  "user_stake_key": "b055f94c72f5a821d623a5e44fe02bc33f1ea128484a7905211b5b1f",
+  "token_policy": "c4dd822c92c486a06933042c49e0f4e0a0440907420d9743321f4105",
+  "token_name": "5468652052616e6368204d6173636f74",
+  "empty_bytes": "",
+  "ada_input": 69000000,
+  "total_escrow_ada": 71600000,
+  "deadline_ms": 1776527736335
+}
