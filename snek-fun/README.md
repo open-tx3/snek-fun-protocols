@@ -53,13 +53,7 @@ Scope of this tx3:
 
 ### `place_sell_order`
 
-Same as `place_buy_order` plus:
-
-| Parameter | Source |
-|---|---|
-| `token_amount` | Token quantity being sold. |
-
-The escrow ADA is fixed (`sell_escrow_ada` from env, observed = 2 600 000 lovelace) so callers don't pass it.
+Same as `place_buy_order`, with a `token_amount` for the quantity being sold instead of `ada_input`. The escrow ADA is fixed (`sell_escrow_ada` from env, observed = 2 600 000 lovelace) so callers don't pass it.
 
 ### `cancel_order`
 
