@@ -5,6 +5,7 @@ version = "0.1.0"
 description = "Cardano token launchpad — user-facing order flow (place/cancel buy+sell orders)"
 main = "main.tx3"
 readme = "README.md"
+logo = "logo.png"
 repository = "https://github.com/open-tx3/snek-fun-protocols"
 
 
