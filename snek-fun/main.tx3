@@ -207,6 +207,78 @@ type TokenMintRedeemer {
     Mint,
 }
 
+// --- Functions ---
+//
+// Pure helpers, eliminated by inlining. They centralise the repeated datum and
+// asset-id construction so the tx bodies below read closer to intent.
+
+// Build the user's Cardano address (payment = order validator script side via
+// the user payment pkh, stake = user's own stake key) in the flat struct shape
+// the order datum expects.
+fn order_owner_addr(payment_pkh: Bytes, stake_pkh: Bytes) -> CardanoAddress {
+    CardanoAddress {
+        payment: OrderPayment {
+            pkh: payment_pkh,
+        },
+        stake: OrderStakeJust {
+            inner: OrderStakeCred {
+                cred: OrderPayment {
+                    pkh: stake_pkh,
+                },
+            },
+        },
+    }
+}
+
+// AssetClass constructor (policy id + asset name). "" / "" encodes ADA.
+fn asset_id(policy: Bytes, name: Bytes) -> AssetId {
+    AssetId {
+        policy: policy,
+        name: name,
+    }
+}
+
+// Full order datum. The marker, direction, and the env constants
+// (min_order_out_ada / executor_fee / permitted_executor) are fixed for every
+// order; only the owner, traded assets, amount, and deadline vary per call.
+fn order_datum(
+    owner_pkh: Bytes,
+    owner_stake: Bytes,
+    input_policy: Bytes,
+    input_name: Bytes,
+    output_policy: Bytes,
+    output_name: Bytes,
+    amount: Int,
+    deadline: Int,
+) -> OrderDatum {
+    OrderDatum {
+        marker: 0x01,
+        owner_addr: order_owner_addr(owner_pkh, owner_stake),
+        input_asset: asset_id(input_policy, input_name),
+        output_asset: asset_id(output_policy, output_name),
+        order_amount: OrderAmount {
+            direction: 1,
+            amount: amount,
+        },
+        min_output_ada: min_order_out_ada,
+        executor_fee: executor_fee,
+        permitted_executor: permitted_executor,
+        deadline: deadline,
+        owner_pkh: owner_pkh,
+    }
+}
+
+// Total ADA spent (excluding network fees) by a token launch: the launch fee
+// plus the three min-ADA outputs and the pool seed.
+fn total_launch_spend(
+    launch_fee: Int,
+    metadata_min: Int,
+    creator_min: Int,
+    pool_seed: Int,
+) -> Int {
+    launch_fee + metadata_min + creator_min + pool_seed
+}
+
 // --- Transactions ---
 
 // 1. place_buy_order
@@ -243,38 +315,16 @@ tx place_buy_order(
     output {
         to: OrderScript,
         amount: Ada(total_escrow_ada),
-        datum: OrderDatum {
-            marker: 0x01,
-            owner_addr: CardanoAddress {
-                payment: OrderPayment {
-                    pkh: user_pkh,
-                },
-                stake: OrderStakeJust {
-                    inner: OrderStakeCred {
-                        cred: OrderPayment {
-                            pkh: user_stake_key,
-                        },
-                    },
-                },
-            },
-            input_asset: AssetId {
-                policy: empty_bytes,
-                name: empty_bytes,
-            },
-            output_asset: AssetId {
-                policy: token_policy,
-                name: token_name,
-            },
-            order_amount: OrderAmount {
-                direction: 1,
-                amount: ada_input,
-            },
-            min_output_ada: min_order_out_ada,
-            executor_fee: executor_fee,
-            permitted_executor: permitted_executor,
-            deadline: deadline_ms,
-            owner_pkh: user_pkh,
-        },
+        datum: order_datum(
+            user_pkh,
+            user_stake_key,
+            empty_bytes,
+            empty_bytes,
+            token_policy,
+            token_name,
+            ada_input,
+            deadline_ms,
+        ),
     }
 
     output {
@@ -314,38 +364,16 @@ tx place_sell_order(
     output {
         to: OrderScript,
         amount: Ada(sell_escrow_ada) + sell_tokens,
-        datum: OrderDatum {
-            marker: 0x01,
-            owner_addr: CardanoAddress {
-                payment: OrderPayment {
-                    pkh: user_pkh,
-                },
-                stake: OrderStakeJust {
-                    inner: OrderStakeCred {
-                        cred: OrderPayment {
-                            pkh: user_stake_key,
-                        },
-                    },
-                },
-            },
-            input_asset: AssetId {
-                policy: token_policy,
-                name: token_name,
-            },
-            output_asset: AssetId {
-                policy: empty_bytes,
-                name: empty_bytes,
-            },
-            order_amount: OrderAmount {
-                direction: 1,
-                amount: token_amount,
-            },
-            min_output_ada: min_order_out_ada,
-            executor_fee: executor_fee,
-            permitted_executor: permitted_executor,
-            deadline: deadline_ms,
-            owner_pkh: user_pkh,
-        },
+        datum: order_datum(
+            user_pkh,
+            user_stake_key,
+            token_policy,
+            token_name,
+            empty_bytes,
+            empty_bytes,
+            token_amount,
+            deadline_ms,
+        ),
     }
 
     output {
@@ -497,7 +525,7 @@ tx launch_token(
     // User wallet — additional ADA for outputs and fees.
     input* source {
         from: User,
-        min_amount: Ada(launch_fee_ada + metadata_min_ada + creator_min_ada + pool_seed_ada) + fees,
+        min_amount: Ada(total_launch_spend(launch_fee_ada, metadata_min_ada, creator_min_ada, pool_seed_ada)) + fees,
     }
 
     // Mint the pool beacon NFT under the stable factory policy.
@@ -529,10 +557,7 @@ tx launch_token(
         to: MetadataScript,
         amount: Ada(metadata_min_ada) + metadata_nft,
         datum: MetadataDatum {
-            asset: AssetId {
-                policy: token_policy,
-                name: token_name,
-            },
+            asset: asset_id(token_policy, token_name),
             ticker: ticker,
             logo_cid: logo_cid,
             description: description,
@@ -562,18 +587,9 @@ tx launch_token(
         to: BondingCurveScript,
         amount: Ada(pool_seed_ada) + pool_nft + curve_tokens,
         datum: PoolDatum {
-            pool_nft: AssetId {
-                policy: pool_nft_policy,
-                name: pool_nft_name,
-            },
-            quote_asset: AssetId {
-                policy: empty_bytes,
-                name: empty_bytes,
-            },
-            base_asset: AssetId {
-                policy: token_policy,
-                name: token_name,
-            },
+            pool_nft: asset_id(pool_nft_policy, pool_nft_name),
+            quote_asset: asset_id(empty_bytes, empty_bytes),
+            base_asset: asset_id(token_policy, token_name),
             a_num: a_num,
             b_num: b_num,
             executor: permitted_executor,
@@ -592,6 +608,6 @@ tx launch_token(
     // Output 4: ADA change back to the creator.
     output {
         to: User,
-        amount: source - Ada(launch_fee_ada + metadata_min_ada + creator_min_ada + pool_seed_ada) - fees,
+        amount: source - Ada(total_launch_spend(launch_fee_ada, metadata_min_ada, creator_min_ada, pool_seed_ada)) - fees,
     }
 }
