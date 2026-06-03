@@ -235,12 +235,12 @@ tx place_buy_order(
     /// Deadline in unix millis after which the batcher must reject the order.
     deadline_ms: Int,
 ) {
-    input* source {
+    input* payment {
         from: User,
         min_amount: Ada(total_escrow_ada) + fees,
     }
 
-    output {
+    output order {
         to: OrderScript,
         amount: Ada(total_escrow_ada),
         datum: OrderDatum {
@@ -277,9 +277,9 @@ tx place_buy_order(
         },
     }
 
-    output {
+    output change {
         to: User,
-        amount: source - Ada(total_escrow_ada) - fees,
+        amount: payment - Ada(total_escrow_ada) - fees,
     }
 }
 
@@ -306,12 +306,12 @@ tx place_sell_order(
         sell_tokens: AnyAsset(token_policy, token_name, token_amount),
     }
 
-    input* source {
+    input* payment {
         from: User,
         min_amount: Ada(sell_escrow_ada) + sell_tokens + fees,
     }
 
-    output {
+    output order {
         to: OrderScript,
         amount: Ada(sell_escrow_ada) + sell_tokens,
         datum: OrderDatum {
@@ -348,9 +348,9 @@ tx place_sell_order(
         },
     }
 
-    output {
+    output change {
         to: User,
-        amount: source - Ada(sell_escrow_ada) - sell_tokens - fees,
+        amount: payment - Ada(sell_escrow_ada) - sell_tokens - fees,
     }
 }
 
@@ -368,13 +368,13 @@ tx cancel_order(
         ref: order_validator_ref,
     }
 
-    input order_input {
+    input order {
         ref: order_utxo,
         datum_is: OrderDatum,
         redeemer: OrderRedeemer::Cancel {},
     }
 
-    input* source {
+    input* payment {
         from: User,
         min_amount: fees,
     }
@@ -384,14 +384,14 @@ tx cancel_order(
         min_amount: fees,
     }
 
-    output {
+    output refund {
         to: User,
-        amount: order_input,
+        amount: order,
     }
 
-    output {
+    output change {
         to: User,
-        amount: source - fees,
+        amount: payment - fees,
     }
 }
 
@@ -495,7 +495,7 @@ tx launch_token(
     }
 
     // User wallet — additional ADA for outputs and fees.
-    input* source {
+    input* payment {
         from: User,
         min_amount: Ada(launch_fee_ada + metadata_min_ada + creator_min_ada + pool_seed_ada) + fees,
     }
@@ -525,7 +525,7 @@ tx launch_token(
     }
 
     // Output 0: metadata NFT + descriptor datum at the metadata validator.
-    output {
+    output metadata {
         to: MetadataScript,
         amount: Ada(metadata_min_ada) + metadata_nft,
         datum: MetadataDatum {
@@ -552,13 +552,13 @@ tx launch_token(
     }
 
     // Output 1: launch fee to the snek.fun collector.
-    output {
+    output fee {
         to: FeeAddress,
         amount: Ada(launch_fee_ada),
     }
 
     // Output 2: bonding curve seed — pool NFT + remaining tokens + initial ADA.
-    output {
+    output pool {
         to: BondingCurveScript,
         amount: Ada(pool_seed_ada) + pool_nft + curve_tokens,
         datum: PoolDatum {
@@ -584,14 +584,14 @@ tx launch_token(
     }
 
     // Output 3: creator's initial token holding (optional "dev buy").
-    output {
+    output dev_buy {
         to: User,
         amount: Ada(creator_min_ada) + creator_tokens,
     }
 
     // Output 4: ADA change back to the creator.
-    output {
+    output change {
         to: User,
-        amount: source - Ada(launch_fee_ada + metadata_min_ada + creator_min_ada + pool_seed_ada) - fees,
+        amount: payment - Ada(launch_fee_ada + metadata_min_ada + creator_min_ada + pool_seed_ada) - fees,
     }
 }
