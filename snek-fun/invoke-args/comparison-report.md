@@ -1,5 +1,19 @@
 # snek.fun — tx3 vs on-chain comparison report
 
+> **Note (2026-06-23):** the source was refactored to use tx3 0.23 features
+> (address enums, inlined escrows/supply split, grouped `meta`/`author` record
+> params, `""` byte literal, shared `owner_address` fn). The **on-chain output
+> shapes below are unchanged** — verified by a full TIR diff against the
+> pre-refactor baseline (every Constr nesting / field order preserved; the only
+> diffs are the inlined `Add`/`Sub` arithmetic and `empty_bytes`→`""`, both
+> byte-equivalent). The byte-match claims here still hold, and were **re-confirmed
+> live-resolved on 2026-06-23** against the mainnet TRP (≥0.23):
+> `place_buy_order` reproduces the on-chain Poppy order datum byte-for-byte
+> (blake2b `da37…ec677`), and `launch_token`'s `PoolDatum` matches the real Poppy
+> launch in 7/9 fields. See `protocols_tx3/TX3-0.23-UPGRADE.md` (snek-fun section)
+> for the change log. The `invoke-args/*.json` reflect the new (smaller, partly
+> self-describing) param surface.
+
 All four user-facing transactions compile, build and produce CBOR that
 structurally matches the real on-chain shape.
 
@@ -162,7 +176,7 @@ re-apply the template:
 
 ```python
 import hashlib
-tpl = bytes.fromhex(open('investigacion/scripts/token_mint.v3.template.cbor.hex').read())
+tpl = bytes.fromhex(open('investigation/scripts/token_mint.v3.template.cbor.hex').read())
 seed_tx  = bytes.fromhex('<your seed tx hash>')   # 32 bytes
 seed_idx = 0                                       # 0..23
 applied  = tpl[:475] + seed_tx + bytes([seed_idx]) + tpl[475+33:]

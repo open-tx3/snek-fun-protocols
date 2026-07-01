@@ -8,8 +8,6 @@
   "user_stake_key": "b055f94c72f5a821d623a5e44fe02bc33f1ea128484a7905211b5b1f",
   "token_policy": "c4dd822c92c486a06933042c49e0f4e0a0440907420d9743321f4105",
   "token_name": "5468652052616e6368204d6173636f74",
-  "empty_bytes": "",
   "ada_input": 69000000,
-  "total_escrow_ada": 71600000,
   "deadline_ms": 1776527736335
 }
